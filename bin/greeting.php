@@ -27,7 +27,6 @@ if($now >= date('07:00') && $now <= date('12:00')){
 
 ?>
 </p>
-<p>test</p>
 	</div>
 </div>
 </body>
