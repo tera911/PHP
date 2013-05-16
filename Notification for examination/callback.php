@@ -20,14 +20,45 @@ if (isset($_REQUEST['oauth_token']) && $_SESSION['oauth_token'] !== $_REQUEST['o
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
 
 /* Request access tokens from twitter */
-$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+$access_token = $connection->getAccessoken($_REQUEST['oauth_verifier']);
 
 /* Save the access tokens. Normally these would be saved in a database for future use. */
-$_SESSION['access_token'] = $access_token;
+//$_SESSION['access_token'] = $access_token;
 
+require_once('./mysql/connection.php');
+
+$dbconn = new MySQLConnection();
+//新規ユーザーはDBに保存
+if(empty($_SESSION['id'])){
+	$dbconn->registerUserAuth($access_token['user_id'],$access_token['screen_name'],
+		$access_token['oauth_token'],$access_token['oauth_token_secret']);
+}else{
+	//既存ユーザーでoauth_tokenが違う場合は更新
+	if($dbconn->getOAuth_token != $_SESSION['oauth_token']){
+		$dbconn->updateUserAuth($access_token['user_id'],$access_token['screen_name'],
+		$access_token['oauth_token'],$access_token['oauth_token_secret']);
+	}
+}
+
+//既存ユーザーはそのまま
+
+
+
+//Sessionにログイン確認値を入れる
+
+$_SESSION['id'] = $access_token['screen_name'];
+$_SESSION['auth'] = 1;
+
+//Sessionに格納されたOAuth token,secret tokenを削除
+unset($_SESSION['oauth_token']);
+unset($_SESSION['oauth_token_secret']);
+
+header('Location : ./');
+/*
 echo "{$access_token['oauth_token']}<br>";
 echo "{$access_token['oauth_token_secret']}<br>";
 var_dump($access_token);
+*/
 /* Remove no longer needed request tokens */
 
 //unset($_SESSION['oauth_token']);
