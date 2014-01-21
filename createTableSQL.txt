@@ -1,0 +1,13 @@
+﻿CREATE DATABASE claudias_kids DEFAULT CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON claudias_kids.* TO tripledogdare@localhost IDENTIFIED BY 'n0s3art';
+
+
+CREATE TABLE `contacts` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(128) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `notes` text NOT NULL,
+  `stamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `ipaddress` varchar(32) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
